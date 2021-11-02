@@ -8,21 +8,21 @@ import (
 )
 
 type options struct {
-	memory      uint32
-	iterations  uint32
-	parallelism uint8
 	saltLength  uint32
-	keyLength   uint32
+	time        uint32
+	memory      uint32
+	parallelism uint8
+	keyLen      uint32
 }
 
 // Generate an Argon2 hash with specifc parameters defined in the options
-func generateHash(data string) []byte {
+func generateArgon2Hash(data []byte) []byte {
 	config := &options{
-		memory:      64 * 1024,
-		iterations:  5,
-		parallelism: 2,
 		saltLength:  16,
-		keyLength:   32,
+		time:        4,
+		memory:      64 * 1024,
+		parallelism: 2,
+		keyLen:      32,
 	}
 
 	hash, err := hasher(data, config)
@@ -33,7 +33,7 @@ func generateHash(data string) []byte {
 	return hash
 }
 
-func hasher(data string, config *options) (hash []byte, err error) {
+func hasher(data []byte, config *options) (hash []byte, err error) {
 	// generate a cryptographically secure random salt
 	salt, err := salter(config.saltLength)
 	if err != nil {
@@ -41,23 +41,23 @@ func hasher(data string, config *options) (hash []byte, err error) {
 	}
 
 	// using the argon2 ID variant, hash the data w/ the randomized salt parameters
-	hash = argon2.IDKey([]byte(data),
+	hash = argon2.IDKey(data,
 		salt,
-		config.iterations,
+		config.time,
 		config.memory,
 		config.parallelism,
-		config.keyLength,
+		config.keyLen,
 	)
 
 	return hash, nil
 }
 
-func salter(saltLength uint32) ([]byte, error) {
-	salt := make([]byte, saltLength)
-	_, err := rand.Read(salt)
+func salter(n uint32) ([]byte, error) {
+	arr := make([]byte, n)
+	_, err := rand.Read(arr)
 	if err != nil {
 		return nil, err
-	} else {
-		return salt, nil
 	}
+
+	return arr, nil
 }

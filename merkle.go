@@ -1,7 +1,6 @@
 package main
 
 import (
-	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 )
@@ -45,7 +44,8 @@ func createNode(rightChild, leftChild *MerkleNode, data []byte) *MerkleNode {
 
 	if rightChild == nil && leftChild == nil {
 		/** creating child node (a "leaf" type node which does not contain any child nodes) **/
-		hash := sha256.Sum256(data)
+		// hash := sha256.Sum256(data)
+		hash := generateArgon2Hash(data)
 
 		node.hash = hash[:]
 		node.data = data
@@ -58,7 +58,7 @@ func createNode(rightChild, leftChild *MerkleNode, data []byte) *MerkleNode {
 		childrenHashes := append(rightChild.hash, leftChild.hash...)
 		rawData := append(childrenHashes, data...)
 
-		hash := sha256.Sum256(rawData)
+		hash := generateArgon2Hash(rawData)
 
 		node.hash = hash[:]
 		node.data = data
@@ -83,7 +83,7 @@ func createTree(data [][]byte) *MerkleTree {
 		nodes = append(nodes, *node)
 	}
 
-	for i := 0; i < len(data)/2; i++ {
+	for i := 0; i < len(data)/2-1; i++ {
 		var level []MerkleNode
 
 		for j := 0; j < len(nodes); j += 2 {
