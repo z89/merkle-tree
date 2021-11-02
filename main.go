@@ -1,24 +1,22 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"io/ioutil"
 	"log"
-	"strings"
 	"time"
 )
-
-// sha256("test123") = "ecd71870d1963316a97e3ac3408c9835ad8cf0f3c1bc703527c30265534f75ae"
 
 func timeTrack(start time.Time, name string) {
 	elapsed := time.Since(start)
 	log.Printf("%s took %s", name, elapsed)
 }
 
-func readFile() string {
+func readFile(filepath string) string {
 	defer timeTrack(time.Now(), "readFile")
 
-	body, err := ioutil.ReadFile("generated.json")
+	body, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		log.Fatalf("unable to read file: %v", err)
 	}
@@ -27,18 +25,24 @@ func readFile() string {
 }
 
 func main() {
-	json := readFile()
-	reader := strings.NewReader(json)
 	defer timeTrack(time.Now(), "main")
 
-	// fmt.Printf("%T", reader)
+	var treeObjects [][]byte
 
-	// createNode(nil, nil, []byte(json)) // create leaf node
+	json := readFile("./data/generated.json")
+	pic := readFile("./data/test.jpg")
+	text := readFile("./data/text.txt")
 
-	count, err := lineCounter(reader)
-	if err != nil {
-		log.Fatalf("line counter problem!")
-	}
+	treeObjects = append(treeObjects, []byte(json))
+	treeObjects = append(treeObjects, []byte(text))
+	treeObjects = append(treeObjects, []byte(pic))
 
-	fmt.Printf("%d\n", count)
+	tree := createTree(treeObjects)
+
+	fmt.Printf("Accessing through tree object:\n")
+	fmt.Printf("root: %s\n", hex.EncodeToString(tree.RootNode.hash))
+	fmt.Printf("right child hash: %s\n", hex.EncodeToString(tree.RootNode.rightChild.hash))
+	fmt.Printf("left child hash: %s\n", hex.EncodeToString(tree.RootNode.leftChild.hash))
+	fmt.Printf("right right child hash: %s\n", hex.EncodeToString(tree.RootNode.rightChild.rightChild.hash))
+	fmt.Printf("left left child hash: %s\n\n", hex.EncodeToString(tree.RootNode.leftChild.leftChild.hash))
 }

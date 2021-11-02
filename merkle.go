@@ -6,14 +6,18 @@ import (
 	"fmt"
 )
 
-type Node struct {
-	hash       []byte
-	data       []byte
-	rightChild *Node
-	leftChild  *Node
+type MerkleTree struct {
+	RootNode *MerkleNode
 }
 
-func displayNode(node Node) {
+type MerkleNode struct {
+	hash       []byte
+	data       []byte
+	rightChild *MerkleNode
+	leftChild  *MerkleNode
+}
+
+func displayNode(node MerkleNode) {
 	/** display node info **/
 	if node.rightChild != nil && node.leftChild != nil {
 		fmt.Printf("+----------------------------+\n+    created parent node     +\n+----------------------------+\n")
@@ -36,8 +40,8 @@ func displayNode(node Node) {
 	}
 }
 
-func createNode(rightChild, leftChild *Node, data []byte) *Node {
-	node := Node{} // initalise node
+func createNode(rightChild, leftChild *MerkleNode, data []byte) *MerkleNode {
+	node := MerkleNode{} // initalise node
 
 	if rightChild == nil && leftChild == nil {
 		/** creating child node (a "leaf" type node which does not contain any child nodes) **/
@@ -65,4 +69,32 @@ func createNode(rightChild, leftChild *Node, data []byte) *Node {
 	}
 
 	return &node
+}
+
+func createTree(data [][]byte) *MerkleTree {
+	var nodes []MerkleNode
+
+	if len(data)%2 != 0 {
+		data = append(data, data[len(data)-1])
+	}
+
+	for _, dat := range data {
+		node := createNode(nil, nil, dat)
+		nodes = append(nodes, *node)
+	}
+
+	for i := 0; i < len(data)/2; i++ {
+		var level []MerkleNode
+
+		for j := 0; j < len(nodes); j += 2 {
+			node := createNode(&nodes[j], &nodes[j+1], nil)
+			level = append(level, *node)
+		}
+
+		nodes = level
+	}
+
+	tree := MerkleTree{&nodes[0]}
+
+	return &tree
 }

@@ -35,7 +35,7 @@ func generateHash(data string) []byte {
 
 func hasher(data string, config *options) (hash []byte, err error) {
 	// generate a cryptographically secure random salt
-	salt, err := randomBytes(config.saltLength)
+	salt, err := salter(config.saltLength)
 	if err != nil {
 		return nil, err
 	}
@@ -52,12 +52,12 @@ func hasher(data string, config *options) (hash []byte, err error) {
 	return hash, nil
 }
 
-func randomBytes(n uint32) ([]byte, error) {
-	arr := make([]byte, n)
-	_, err := rand.Read(arr)
+func salter(saltLength uint32) ([]byte, error) {
+	salt := make([]byte, saltLength)
+	_, err := rand.Read(salt)
 	if err != nil {
 		return nil, err
+	} else {
+		return salt, nil
 	}
-
-	return arr, nil
 }
