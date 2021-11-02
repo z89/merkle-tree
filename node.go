@@ -49,7 +49,6 @@ func createNode(rightChild, leftChild *Node, data []byte) *Node {
 		node.leftChild = nil
 
 		displayNode(node)
-
 	} else {
 		/** creating parent node (a "branch" type node which links the "root" and "leaf" nodes) **/
 		childrenHashes := append(rightChild.hash, leftChild.hash...)
@@ -63,7 +62,6 @@ func createNode(rightChild, leftChild *Node, data []byte) *Node {
 		node.leftChild = leftChild
 
 		displayNode(node)
-
 	}
 
 	return &node
