@@ -7,7 +7,7 @@ import (
 	"golang.org/x/crypto/argon2"
 )
 
-type params struct {
+type options struct {
 	memory      uint32
 	iterations  uint32
 	parallelism uint8
@@ -15,9 +15,9 @@ type params struct {
 	keyLength   uint32
 }
 
-func generateHash(pass string) []byte {
-	// Establish the parameters to use for Argon2.
-	p := &params{
+// Generate an Argon2 hash with specifc parameters defined in the options
+func generateHash(data string) []byte {
+	config := &options{
 		memory:      64 * 1024,
 		iterations:  5,
 		parallelism: 2,
@@ -25,7 +25,7 @@ func generateHash(pass string) []byte {
 		keyLength:   32,
 	}
 
-	hash, err := generateFromPassword(pass, p)
+	hash, err := hasher(data, config)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,27 +33,31 @@ func generateHash(pass string) []byte {
 	return hash
 }
 
-func generateFromPassword(password string, p *params) (hash []byte, err error) {
-	// Generate a cryptographically secure random salt.
-	salt, err := generateRandomBytes(p.saltLength)
+func hasher(data string, config *options) (hash []byte, err error) {
+	// generate a cryptographically secure random salt
+	salt, err := randomBytes(config.saltLength)
 	if err != nil {
 		return nil, err
 	}
 
-	// Pass the plaintext password, salt and parameters to the argon2.IDKey
-	// function. This will generate a hash of the password using the Argon2id
-	// variant.
-	hash = argon2.IDKey([]byte(password), salt, p.iterations, p.memory, p.parallelism, p.keyLength)
+	// using the argon2 ID variant, hash the data w/ the randomized salt parameters
+	hash = argon2.IDKey([]byte(data),
+		salt,
+		config.iterations,
+		config.memory,
+		config.parallelism,
+		config.keyLength,
+	)
 
 	return hash, nil
 }
 
-func generateRandomBytes(n uint32) ([]byte, error) {
-	b := make([]byte, n)
-	_, err := rand.Read(b)
+func randomBytes(n uint32) ([]byte, error) {
+	arr := make([]byte, n)
+	_, err := rand.Read(arr)
 	if err != nil {
 		return nil, err
 	}
 
-	return b, nil
+	return arr, nil
 }
