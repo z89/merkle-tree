@@ -32,7 +32,7 @@ func main() {
 	// real files for testing
 
 	json := readFile("./data/generated.json")
-	pic := readFile("./data/test.jpg")
+	pic := readFile("./data/test.jpeg")
 	text := readFile("./data/text.txt")
 
 	treeObjects = append(treeObjects, []byte(json))
