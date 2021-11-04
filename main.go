@@ -29,27 +29,37 @@ func main() {
 
 	var treeObjects [][]byte
 
+	// real files for testing
+
 	json := readFile("./data/generated.json")
 	pic := readFile("./data/test.jpg")
 	text := readFile("./data/text.txt")
 
-	// placeholder data for leaf nodes
 	treeObjects = append(treeObjects, []byte(json))
 	treeObjects = append(treeObjects, []byte(text))
 	treeObjects = append(treeObjects, []byte(pic))
-	treeObjects = append(treeObjects, []byte("assd"))
 
-	treeObjects = append(treeObjects, []byte("assd"))
-	treeObjects = append(treeObjects, []byte("assd"))
-	treeObjects = append(treeObjects, []byte("assd"))
-	treeObjects = append(treeObjects, []byte("assd"))
+	treeObjects = append(treeObjects, []byte("hello"))
+	treeObjects = append(treeObjects, []byte("world"))
+
+	treeObjects = append(treeObjects, []byte("lorem"))
+	treeObjects = append(treeObjects, []byte("ipsum"))
 
 	tree := createTree(treeObjects)
 
-	fmt.Printf("Accessing through tree object:\n")
-	fmt.Printf("root: %s\n", hex.EncodeToString(tree.RootNode.hash))
-	fmt.Printf("right child hash: %s\n", hex.EncodeToString(tree.RootNode.rightChild.hash))
-	fmt.Printf("left child hash: %s\n", hex.EncodeToString(tree.RootNode.leftChild.hash))
-	// fmt.Printf("right right child hash: %s\n", hex.EncodeToString(tree.RootNode.rightChild.rightChild.hash))
-	// fmt.Printf("left left child hash: %s\n\n", hex.EncodeToString(tree.RootNode.leftChild.leftChild.hash))
+	fmt.Printf("merkle tree: \n")
+	fmt.Printf("root: %s\n\n", hex.EncodeToString(tree.root.hash))
+	fmt.Printf("tree depth: %d\n\n", tree.depth)
+
+	// display data from second appended file (text.txt) for testing
+	fmt.Printf("leaf node test	****\n")
+	fmt.Printf("leaf node hash	: %s\n", hex.EncodeToString(tree.root.left.left.right.hash))
+	fmt.Printf("leaf node data	: %s\n", tree.root.left.left.right.data)
+	fmt.Printf("original data	: %s\n\n", text)
+
+	// display data from second appended piece of data ("lorem") for testing
+	fmt.Printf("leaf node test	****\n")
+	fmt.Printf("leaf node hash	: %s\n", hex.EncodeToString(tree.root.right.left.right.hash))
+	fmt.Printf("leaf node data	: %s\n", tree.root.right.left.right.data)
+	fmt.Printf("original data	: %s\n\n", []byte("lorem"))
 }

@@ -1,4 +1,4 @@
-module github.com/z89/merkle-tree
+module merkle-tree
 
 go 1.17
 
