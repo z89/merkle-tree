@@ -46,7 +46,7 @@ func createTree(data [][]byte) *MerkleTree {
 	}
 
 	if len(nodes)%2 != 0 {
-		node := createNode(nil, nil, nil)
+		node := createNode(nil, nil, []byte("empty data leaf node"))
 		nodes = append(nodes, *node)
 	}
 
@@ -57,12 +57,12 @@ func createTree(data [][]byte) *MerkleTree {
 		var round []MerkleNode
 
 		if len(temp)%2 != 0 {
-			node := createNode(&temp[0], &temp[0], nil)
+			node := createNode(&temp[0], &temp[0], []byte("empty data parent node (odd)"))
 			temp = append(temp, *node)
 		}
 
 		for i := 0; i < len(temp); i += 2 {
-			node := createNode(&temp[i], &temp[i+1], nil)
+			node := createNode(&temp[i], &temp[i+1], []byte("empty data parent node"))
 			round = append(round, *node)
 		}
 

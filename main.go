@@ -38,12 +38,26 @@ func main() {
 	treeObjects = append(treeObjects, []byte(json))
 	treeObjects = append(treeObjects, []byte(text))
 	treeObjects = append(treeObjects, []byte(pic))
+	treeObjects = append(treeObjects, []byte("he5llo"))
 
-	treeObjects = append(treeObjects, []byte("hello"))
 	treeObjects = append(treeObjects, []byte("world"))
-
 	treeObjects = append(treeObjects, []byte("lorem"))
 	treeObjects = append(treeObjects, []byte("ipsum"))
+	treeObjects = append(treeObjects, []byte("tree"))
+
+	treeObjects = append(treeObjects, []byte("bark"))
+	treeObjects = append(treeObjects, []byte("dog"))
+	treeObjects = append(treeObjects, []byte("cat"))
+
+	treeObjects = append(treeObjects, []byte(json))
+	treeObjects = append(treeObjects, []byte(text))
+	treeObjects = append(treeObjects, []byte(pic))
+	treeObjects = append(treeObjects, []byte("he3llo"))
+
+	treeObjects = append(treeObjects, []byte("world"))
+	treeObjects = append(treeObjects, []byte("lorem"))
+	treeObjects = append(treeObjects, []byte("ipsum"))
+	treeObjects = append(treeObjects, []byte("tree"))
 
 	tree := createTree(treeObjects)
 
@@ -53,8 +67,8 @@ func main() {
 
 	// display data from second appended file (text.txt) for testing
 	fmt.Printf("leaf node test	****\n")
-	fmt.Printf("leaf node hash	: %s\n", hex.EncodeToString(tree.root.left.left.right.hash))
-	fmt.Printf("leaf node data	: %s\n", tree.root.left.left.right.data)
+	fmt.Printf("leaf node hash	: %s\n", hex.EncodeToString(tree.root.left.right.left.hash))
+	fmt.Printf("leaf node data	: %s\n", tree.root.right.left.left.left.left.left.left.left.left.data)
 	fmt.Printf("original data	: %s\n\n", text)
 
 	// display data from second appended piece of data ("lorem") for testing
